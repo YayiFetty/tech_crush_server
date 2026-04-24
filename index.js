@@ -8,6 +8,7 @@ const users = [
   { id: 2, name: "nas", email: "nas@gmail.com" },
 ];
 
+express.json();
 app.get("/", (req, res) => {
   res.send("server is running");
 });
@@ -23,6 +24,27 @@ app.get("/users/:id", (req, res) => {
     return res.status(404).json({ error: "User not found" });
   }
   res.status(200).json(user);
+});
+
+app.post("/users/:id", (req, res) => {
+  const { name, email } = req.body;
+  //validate
+  if (!name || email) {
+    return res.status(400).json({
+      error: "Name and email are required",
+    });
+  }
+
+  //new user
+  const newUser = {
+    id: users.length + 1,
+    name: name,
+    email: email,
+  };
+  users.push(newUser);
+
+  //201 creaqted
+  res.status(201).json(newUser);
 });
 app.listen(port, () => {
   console.log(`server is running on port ${port}`);
